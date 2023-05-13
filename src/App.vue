@@ -33,7 +33,7 @@
 import MainLayout from './MainLayout.vue'
 import { defineAsyncComponent, reactive, onMounted } from 'vue';
 import { store } from './store'
-import { messages, msgClose } from './messages'
+import { ClearMessages, messages, msgClose } from './messages'
 import { post } from './http'
 const Password = defineAsyncComponent(() => import('primevue/password'));
 const Message = defineAsyncComponent(() => import('primevue/message'));
@@ -43,6 +43,7 @@ const loginData = reactive({
    password: ''
 })
 function authorize() {
+   ClearMessages()
    post('/login', JSON.stringify(loginData)).then(data => {
       if (data) {
          localStorage.setItem('token', data)
@@ -52,7 +53,6 @@ function authorize() {
 }
 
 function restoreSession() {
-   console.log('restore session');
    post('/restore-session', JSON.stringify({token: localStorage.getItem('token')})).then(data => store.isAuthorized = data)
 }
 

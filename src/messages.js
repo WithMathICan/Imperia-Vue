@@ -1,13 +1,13 @@
 import { reactive } from 'vue'
 
-/** @type {Record<string, import("./api").IMessage>} */
+/** @type {Record<string, import("./types").IMessage>} */
 export const messages = reactive({})
 
 /**
  *
  * @param {string} content
  * @param {number} life Time in milliseconds
- * @param {import("./api").TMsgSeverity } severity
+ * @param {import("./types").TMsgSeverity } severity
  * @param {boolean} closable
  */
 export function showMessage(content, life, severity, closable = true) {
@@ -30,16 +30,14 @@ export function ClearMessages() {
 }
 
 /**
- *
- * @param {import("./api").IMessage} msg1
- * @param {import("./api").IMessage} msg2
- * @returns
+ * @param {import("./types").IMessage} msg1
+ * @param {import("./types").IMessage} msg2
  */
 function msgsIsAlmostCoincide(msg1, msg2) {
    return msg1.content === msg2.content && msg1.severity === msg2.severity && msg1.closable === msg2.closable
 }
 
-/** @param {import("./api").IMessage} msg */
+/** @param {import("./types").IMessage} msg */
 function findMsg(msg) {
    for (const key in messages) {
       if (msgsIsAlmostCoincide(messages[key], msg)) {
@@ -50,10 +48,10 @@ function findMsg(msg) {
 
 /**
  * @param {string} content
- * @param {number} life Time in miliseconds
- * @param {import("./api").TMsgSeverity } severity
+ * @param {number} life Time in milliseconds
+ * @param {import("./types").TMsgSeverity } severity
  * @param {boolean} closable
- * @returns {import("./api").IMessage}
+ * @returns {import("./types").IMessage}
  */
 function createMessage(content, life, severity, closable) {
    const id = Math.random().toString();
@@ -63,8 +61,8 @@ function createMessage(content, life, severity, closable) {
 
 /**
  * @param {string} content
- * @param {number} life Time in miliseconds
- * @param {import("./api").TMsgSeverity } severity
+ * @param {number} life Time in milliseconds
+ * @param {import("./types").TMsgSeverity } severity
  * @param {boolean} closable
  */
 function addMessage(content, life, severity, closable) {

@@ -1,3 +1,1 @@
-<template>
-   <h1>Smart Panel</h1>
-</template>
+<template><h1>Main</h1></template>
