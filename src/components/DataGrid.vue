@@ -8,10 +8,10 @@
       :rows="10" 
       :paginator="true"
       :rowsPerPageOptions="[2, 5, 10, 25, 50, 100, 500]"
-      :stateKey="`dt-state-session-${schema}-${table}`" 
+      :stateKey="sessionKeyForTableSettings" 
       :globalFilterFields="['title']"
       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
-      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" 
+      currentPageReportTemplate="Показано {first} - {last} из {totalRecords}" 
       stateStorage="session"
       v-model:filters="filters" 
       filterDisplay="menu" 
@@ -21,6 +21,19 @@
    >
       <template #empty>
          <h3 class="text-pink-500">Записей нет</h3>
+      </template>
+      <template #header>
+         <div class="flex justify-content-between align-items-center mb-2">
+            <div>
+               <Button type="button" icon="pi pi-filter-slash" class="p-button-outlined" @click="filters=createFilters(colsGridView[key])" />
+               <span class="p-input-icon-left" v-if="filters">
+                  <i class="pi pi-search" />
+                  <InputText v-model="filters['global'].value" placeholder="Keyword Search" />
+               </span>
+            </div>
+            <span v-if="selectedBeans.length" class="text-blue-600">{{ selectedBeans.length }} выбрано</span>
+         </div>
+         <SelectedGridColumns :schema="schema" :table="table" :selectedColumns="selectedColumns" />
       </template>
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column field="id" header="ID" :sortable="true">
@@ -45,14 +58,15 @@
          <template #filter="{ filterModel }">
             <Calendar v-if="col.data_type === 'date'" v-model="filterModel.value" dateFormat="dd-mm-yy"
                placeholder="dd-mm-yyyy" />
-            <!-- <MultiSelect
-               v-else-if="col.fk && Array.isArray(spBeans[spTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)])"
+            <MultiSelect
+               v-else-if="col.fk && Array.isArray(beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)])"
                v-model="filterModel.value"
-               :filter="spBeans[spTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)].length > 5"
-               :options="spBeans[spTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)]"
-               :optionLabel="col.fk.foreign_title_column_name" :option-value="col.fk.foreign_column_name"
+               :filter="beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)].length > 5"
+               :options="beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)]"
+               :optionLabel="col.fk.foreign_title_column_name" 
+               :option-value="col.fk.foreign_column_name"
                placeholder="Any" class="p-column-filter">
-            </MultiSelect> -->
+            </MultiSelect>
             <InputNumber v-else-if="col.data_type === 'number'" v-model="filterModel.value" mode="decimal"
                :min-fraction-digits="0" :max-fraction-digits="5" />
             <InputText v-else type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search" />
@@ -60,7 +74,7 @@
       </Column>
       <Column header="Actions">
          <template #body="slotProps">
-            <!-- <ButtonDelete :schema="schema" :table="table" :ids="[slotProps.data.id]" label="" :delete-cb="clearSelected" /> -->
+            <ButtonDelete :schema="schema" :table="table" :ids="[slotProps.data.id]" label="" :delete-cb="clearSelected" />
             <!-- <ButtonModalEdit :schema="schema" :table="table" :id="slotProps.data.id" /> -->
             <router-link class="link p-button p-button-secondary p-button-icon-only p-component"
                :to="{ name: `copy_${schema}_${table}`, params: { id: slotProps.data.id } }">
@@ -69,6 +83,7 @@
          </template>
       </Column>
    </DataTable>
+   <Button label="Очистить настройки таблицы" @click="clearTableSettings" severity="secondary" />
 </div>
 
 </template>
@@ -82,10 +97,14 @@ import { onMounted, computed, ref, watch } from 'vue'
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'
 import Image from 'primevue/image'
+import MultiSelect from 'primevue/multiselect'
 import Calendar from 'primevue/calendar'
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import ColFk from './data-grid/ColFk.vue'
 import ColM2M from './data-grid/ColM2M.vue'
+import ButtonDelete from './data-grid/ButtonDelete.vue'
+import SelectedGridColumns from './data-grid/SelectedGridColumns.vue'
+// import ButtonModalEdit from './data-grid/ButtonModalEdit.vue'
 
 
 const props = defineProps(['schema', 'table'])
@@ -98,8 +117,13 @@ async function init() {
    filters.value = createFilters(colsGridView[key.value])
 }
 
+let selectedColumns = ref([])
+
 const selectedBeans = ref([])
 const filters = ref()
+function clearSelected(deletedIds) {
+   selectedBeans.value = selectedBeans.value.filter(el => !deletedIds.includes(el.id))
+}
 
 /** @param {import('../types').Col[]} */
 function createFilters(cols) {
@@ -136,6 +160,12 @@ function findDataType(col) {
    if (col.data_type === 'date') return 'date'
    else if (col.data_type === 'number') return 'numeric'
    return 'text'
+}
+
+const sessionKeyForTableSettings = computed(() => `dt-state-session-${props.schema}-${props.table}`)
+
+function clearTableSettings() {
+   sessionStorage.removeItem(sessionKeyForTableSettings.value)
 }
 
 const showDate = date => new Intl.DateTimeFormat("ru", { dateStyle: 'short', timeStyle: 'short' }).format(date)

@@ -22,7 +22,7 @@ export interface IApi {
    GetBeans(): Promise<DbRecord[]>
    // InsertBean(record: DbRecord): Promise<DbRecord | null>
    // UpdateBean(id: string, record: DbRecord): Promise<DbRecord>
-   // RemoveBeans(ids: string[]): Promise<string[]>
+   RemoveBeans(ids: string[]): Promise<string[]>
 }
 
 export type TApi = Record<string, Record<string, IApi>>

@@ -37,4 +37,14 @@ export const initDataGridView = (schema, table, reload = false) => new Promise(a
       }
       beans[key] = newBeans
    }
+   resolve(true)
 })
+
+export const removeBeans =  (schema, table, ids, callback = () => { }) => {
+   const key = getTableKey(schema, table)
+   api[schema][table].RemoveBeans(ids).then(deletedIds => {
+      if (!Array.isArray(deletedIds)) return showMessage('Ошибка при удалении', 5000, 'error')
+      if (Array.isArray(beans[key])) beans[key] = beans[key].filter(el => !deletedIds.includes(el.id))
+      callback(deletedIds)
+   })
+}
