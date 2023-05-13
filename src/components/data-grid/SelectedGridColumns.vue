@@ -11,8 +11,9 @@ import {computed, ref, onMounted} from 'vue'
 import { getTableKey, colsGridView } from '../../store'
 import MultiSelect from 'primevue/multiselect';
 const selected = ref([])
+const emit = defineEmits(['update:columns'])
 
-const props = defineProps(['schema', 'table'])
+const props = defineProps(['schema', 'table', 'columns'])
 const key = computed(() => getTableKey(props.schema, props.table))
 let localStorageKey = computed(() => `key-grid-view-${props.schema}-${props.table}`)
 
@@ -27,6 +28,7 @@ function onToggle(val) {
    localStorage.setItem(localStorageKey.value, val.map(col => col.column_name).join(','))
    if (Array.isArray(colsGridView[key.value])) {
       selected.value = colsGridView[key.value].filter(col => val.includes(col));
+      emit('update:columns', selected.value)
    }
 }
 
@@ -40,5 +42,6 @@ function setInitialCols() {
    } else {
       selected.value = colsGridView[key.value]
    }
+   emit('update:columns', selected.value)
 }
 </script>

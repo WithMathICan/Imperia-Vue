@@ -1,6 +1,5 @@
 <template>
 <h1 class="text-700 mb-2">{{ t(table) }} </h1>
-
 <div v-if="Array.isArray(beans[key]) && Array.isArray(colsGridView[key])">
    <DataTable 
       :value="beans[key]" 
@@ -33,7 +32,7 @@
             </div>
             <span v-if="selectedBeans.length" class="text-blue-600">{{ selectedBeans.length }} выбрано</span>
          </div>
-         <SelectedGridColumns :schema="schema" :table="table" :selectedColumns="selectedColumns" />
+         <SelectedGridColumns :schema="schema" :table="table" v-model:columns="selectedColumns" />
       </template>
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column field="id" header="ID" :sortable="true">
@@ -46,7 +45,7 @@
             <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by ID" />
          </template>
       </Column>
-      <Column v-for="col of colsGridView[key]" :field="col.column_name" :header="col.column_name" :sortable="true"
+      <Column v-for="col of selectedColumns" :field="col.column_name" :header="col.column_name" :sortable="true"
          :data-type="findDataType(col)" :showFilterMatchModes="!col.fk">
          <template #body="slotProps">
             <ColFk v-if="col.data_type === 'fk'" :col="col" :bean="slotProps.data" />
