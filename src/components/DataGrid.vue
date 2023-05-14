@@ -37,7 +37,7 @@
       <Column selectionMode="multiple" headerStyle="width: 3rem"></Column>
       <Column field="id" header="ID" :sortable="true">
          <template #body="slotProps">
-            <router-link class="link p-button p-button-info" :to="{ name: `edit_${schema}_${table}`, params: { id: slotProps.data.id } }">
+            <router-link class="link p-button p-button-info" :to="{ name: `update_${schema}_${table}`, params: { id: slotProps.data.id } }">
                {{ slotProps.data.id.toString().substring(0, 7) }}
             </router-link>
          </template>
@@ -55,10 +55,8 @@
             <span v-else>{{ slotProps.data[col.column_name] }}</span>
          </template>
          <template #filter="{ filterModel }">
-            <Calendar v-if="col.data_type === 'date'" v-model="filterModel.value" dateFormat="dd-mm-yy"
-               placeholder="dd-mm-yyyy" />
-            <MultiSelect
-               v-else-if="col.fk && Array.isArray(beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)])"
+            <Calendar v-if="col.data_type === 'date'" v-model="filterModel.value" dateFormat="dd-mm-yy" placeholder="dd-mm-yyyy" />
+            <MultiSelect v-else-if="col.fk && Array.isArray(beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)])"
                v-model="filterModel.value"
                :filter="beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)].length > 5"
                :options="beans[getTableKey(col.fk.foreign_table_schema, col.fk.foreign_table_name)]"
@@ -66,8 +64,12 @@
                :option-value="col.fk.foreign_column_name"
                placeholder="Any" class="p-column-filter">
             </MultiSelect>
-            <InputNumber v-else-if="col.data_type === 'number'" v-model="filterModel.value" mode="decimal"
-               :min-fraction-digits="0" :max-fraction-digits="5" />
+            <InputNumber v-else-if="col.data_type === 'number'" 
+               v-model="filterModel.value" 
+               mode="decimal"
+               :min-fraction-digits="0" 
+               :max-fraction-digits="5" 
+            />
             <InputText v-else type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search" />
          </template>
       </Column>
@@ -89,7 +91,6 @@
 
 <script setup>
 import { t } from '../translation'
-import { api } from '../api.js'
 import { loading, initDataGridView, beans, colsGridView, getTableKey } from '../store'
 import { onMounted, computed, ref, watch } from 'vue'
 
@@ -140,11 +141,8 @@ function createFilters(cols) {
       if (col.fk) {
          filter[col.column_name] = { value: null, matchMode: FilterMatchMode.IN }
       } else {
-         const matchMode = col.data_type === 'date' ?
-            FilterMatchMode.DATE_IS :
-            col.data_type === 'number' ?
-               FilterMatchMode.EQUALS :
-               FilterMatchMode.CONTAINS
+         const matchMode = col.data_type === 'date' ? FilterMatchMode.DATE_IS 
+            : col.data_type === 'number' ? FilterMatchMode.EQUALS : FilterMatchMode.CONTAINS
          filter[col.column_name] = {
             operator: FilterOperator.AND,
             constraints: [{ value: null, matchMode }],

@@ -1,5 +1,5 @@
 <template>
-<h1>Edit {{ schema }} {{ table }} {{ id }}</h1>
+<h1>Insert {{ schema }} {{ table }} {{ id }}</h1>
 
 </template>
 

@@ -17,9 +17,13 @@ export interface IApi {
    GetColsGridView(): Promise<Col[]>
    GetColsForInsert(): Promise<Col[]>
    GetColsForUpdate(): Promise<Col[]>
-   // GetCols() : Promise<Col[]>
+   GetColsForCopy(): Promise<Col[]>
    // GetBean(id: string, fields = ['*']): Promise<DbRecord>
    GetBeans(): Promise<DbRecord[]>
+   GetBeanForGridView(id: string): Promise<DbRecord>
+   GetBeanForUpdate(id: string): Promise<DbRecord>
+   GetBeanForInsert(id: string): Promise<DbRecord>
+   GetBeanForCopy(id: string): Promise<DbRecord>
    // InsertBean(record: DbRecord): Promise<DbRecord | null>
    // UpdateBean(id: string, record: DbRecord): Promise<DbRecord>
    RemoveBeans(ids: string[]): Promise<string[]>
