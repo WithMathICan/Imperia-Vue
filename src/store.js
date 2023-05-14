@@ -3,6 +3,7 @@ import { api } from './api'
 
 export const store = reactive({
    isAuthorized: undefined,
+   // isBeanChanged: false,
 })
 
 export const loading  = ref(false)
