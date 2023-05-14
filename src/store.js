@@ -30,7 +30,7 @@ const getCols = (schema, table, method, colsObj) => new Promise(async resolve =>
    const key = getTableKey(schema, table)
    if (!Array.isArray(colsObj[key]) && colsObj[key] !== 'loading') {
       colsObj[key] = 'loading'
-      colsObj[key] = await api[schema][table].GetColsGridView()
+      colsObj[key] = await api[schema][table][method]()
    }
    if (Array.isArray(colsObj[key])) return resolve(colsObj[key])
    resolve([])
@@ -48,7 +48,7 @@ export const initDataGridView = (schema, table, reload = false) => new Promise(a
    if ((reload || !Array.isArray(beans[key])) && beans[key] !== 'loading') {
       beans[key] = 'loading'
       let newBeans = await api[schema][table].GetBeans()
-      for (let bean of newBeans) updateBean(bean, cols)
+      for (let bean of newBeans) processBeanFields(bean, cols)
       beans[key] = newBeans
    }
    resolve(true)
@@ -58,23 +58,23 @@ export const getBeanForGridView = (schema, table, id) => new Promise(async resol
    if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForGridView) return resolve({})
    const cols = await getColsGridView(schema, table)
    const bean = await api[schema][table].GetBeanForGridView(id)
-   updateBean(bean, cols)
+   processBeanFields(bean, cols)
    resolve(bean)
 })
 
-export const getBeanForUpdate = (schema, table, id) => new Promise(async resolve => {
-   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForUpdate) return resolve([null, null])
+export const getBeanForUpdate = async (schema, table, id) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForUpdate) return [null, null]
    const cols = await getColsForUpdate(schema, table)
    const bean = await api[schema][table].GetBeanForUpdate(id)
-   updateBean(bean, cols)
-   resolve([bean, cols])
-})
+   processBeanFields(bean, cols)
+   return [bean, cols]
+}
 
 export const removeBeans =  (schema, table, ids, callback = () => { }) => {
-   const key = getTableKey(schema, table)
+   const tableKey = getTableKey(schema, table)
    api[schema][table].RemoveBeans(ids).then(deletedIds => {
       if (!Array.isArray(deletedIds)) return showMessage('Ошибка при удалении', 5000, 'error')
-      if (Array.isArray(beans[key])) beans[key] = beans[key].filter(el => !deletedIds.includes(el.id))
+      if (Array.isArray(beans[tableKey])) beans[tableKey] = beans[tableKey].filter(el => !deletedIds.includes(el.id))
       callback(deletedIds)
    })
 }
@@ -83,9 +83,25 @@ export const removeBeans =  (schema, table, ids, callback = () => { }) => {
  * @param {import('./types').DbRecord} bean 
  * @param {import('./types').Col[]} cols 
  */
-function updateBean(bean, cols) {
+function processBeanFields(bean, cols) {
+   if (!bean) return
    for (let col of cols) {
       if (col.data_type === 'date') bean[col.column_name] = new Date(bean[col.column_name])
       if (col.data_type === 'number') bean[col.column_name] = +bean[col.column_name] 
    }
 }
+
+export const updateBean = (schema, table, id, bean, cols) => new Promise(async resolve => {
+   const updatedBean = await api[schema][table].UpdateBean(id, bean)
+   processBeanFields(updatedBean, cols)
+   resolve(updatedBean)
+   // console.log('AFTER RESOLVE');
+   const tableKey = getTableKey(schema, table)
+   if (Array.isArray(beans[tableKey]) && updatedBean.id) {
+      const bean = await getBeanForGridView(schema, table, id)
+      const oldBean = beans[tableKey].find(el => el.id === bean.id)
+      if (oldBean) for (const key in bean) oldBean[key] = bean[key]
+      else beans[tableKey].push(bean)
+   }
+})
+

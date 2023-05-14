@@ -24,8 +24,8 @@ export interface IApi {
    GetBeanForUpdate(id: string): Promise<DbRecord>
    GetBeanForInsert(id: string): Promise<DbRecord>
    GetBeanForCopy(id: string): Promise<DbRecord>
-   // InsertBean(record: DbRecord): Promise<DbRecord | null>
-   // UpdateBean(id: string, record: DbRecord): Promise<DbRecord>
+   InsertBean(record: DbRecord): Promise<DbRecord | null>
+   UpdateBean(id: string, record: DbRecord): Promise<DbRecord>
    RemoveBeans(ids: string[]): Promise<string[]>
 }
 
