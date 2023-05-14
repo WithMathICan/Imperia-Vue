@@ -1,6 +1,14 @@
 <template>
-   <Button :label="label" :loading="loading" type="button" icon="pi pi-trash" iconPos="right"
-      class="p-button-danger" @click="confirmDelete($event)" :disabled="!(ids && ids.length>0)"></Button>
+   <Button 
+      :label="label" 
+      :loading="loading" 
+      type="button" 
+      icon="pi pi-trash" 
+      iconPos="right"
+      class="p-button-danger mr-1" 
+      @click="confirmDelete($event)" 
+      :disabled="!(ids && ids.length>0)"
+   ></Button>
    <ConfirmPopup></ConfirmPopup>
 </template>
 
@@ -26,7 +34,6 @@ const confirmDelete = (event) => {
       accept: () => {
          removeBeans(props.schema, props.table, props.ids, props.deleteCb)
       },
-      reject: () => { }
    });
 }
 </script>
