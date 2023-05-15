@@ -13,10 +13,10 @@
 </template>
 
 <script setup>
-import ConfirmPopup from 'primevue/confirmpopup';
 import { useConfirm } from "primevue/useconfirm";
-import Button from 'primevue/button';
 import { loading, removeBeans } from '../../store'
+import { defineAsyncComponent } from 'vue'
+const ConfirmPopup = defineAsyncComponent(() => import('primevue/confirmpopup'));
 
 let props = defineProps(['schema', 'table', 'ids', 'label', 'deleteCb'])
 

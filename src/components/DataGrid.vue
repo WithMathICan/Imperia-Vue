@@ -92,7 +92,7 @@
 <script setup>
 import { t } from '../translation'
 import { loading, initDataGridView, beans, colsGridView, getTableKey } from '../store'
-import { onMounted, computed, ref, watch } from 'vue'
+import { onMounted, computed, ref, watch, defineAsyncComponent } from 'vue'
 
 import DataTable from 'primevue/datatable'
 import Column from 'primevue/column'

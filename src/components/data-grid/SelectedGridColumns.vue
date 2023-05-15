@@ -7,9 +7,9 @@
 </template>
 
 <script setup>
-import {computed, ref, onMounted} from 'vue'
+import {computed, ref, onMounted, defineAsyncComponent} from 'vue'
 import { getTableKey, colsGridView } from '../../store'
-import MultiSelect from 'primevue/multiselect';
+const MultiSelect = defineAsyncComponent(() => import('primevue/multiselect'));
 const selected = ref([])
 const emit = defineEmits(['update:columns'])
 

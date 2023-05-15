@@ -4,7 +4,7 @@ import DataGrid from './components/DataGrid.vue'
 import UpdateRecord from './components/UpdateRecord.vue'
 import CopyRecord from './components/CopyRecord.vue'
 import InsertRecord from './components/InsertRecord.vue'
-import { store } from './store'
+
 
 /**@type {import('vue-router').RouteRecordRaw[]} */
 const routes = [
@@ -28,6 +28,7 @@ export function addRoutes(tables) {
       router.addRoute({
          name: `data_grid_${schema}_${table}`,
          path: `/${schema}/${table}`,
+         // component: () => import('./components/DataGrid.vue'),
          component: DataGrid,
          props: { schema, table }
       })
