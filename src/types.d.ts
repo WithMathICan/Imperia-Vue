@@ -22,7 +22,7 @@ export interface IApi {
    GetBeans(): Promise<DbRecord[]>
    GetBeanForGridView(id: string): Promise<DbRecord>
    GetBeanForUpdate(id: string): Promise<DbRecord>
-   GetBeanForInsert(id: string): Promise<DbRecord>
+   GetBeanForInsert(): Promise<DbRecord>
    GetBeanForCopy(id: string): Promise<DbRecord>
    InsertBean(record: DbRecord): Promise<DbRecord | null>
    UpdateBean(id: string, record: DbRecord): Promise<DbRecord>

@@ -21,7 +21,7 @@
          </transition-group>
       </div>
    </div>
-   <ConfirmDialog group="router"></ConfirmDialog>>
+   <ConfirmDialog group="router"></ConfirmDialog>
 </template>
 
 <script setup>

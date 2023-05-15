@@ -9,8 +9,6 @@ import { createApp, defineAsyncComponent } from 'vue'
 
 import PrimeVue from 'primevue/config';
 import App from './App.vue'
-import EmptyComponent from './components/EmptyComponent.vue'
-import NotLoadedComponent from './components/NotLoadedComponent.vue'
 import ConfirmationService from 'primevue/confirmationservice';
 // const Calendar = defineAsyncComponent({
 //    loader: () => import('primevue/calendar'),

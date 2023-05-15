@@ -13,18 +13,16 @@ export const beans = reactive({})
 
 /** @type {Record<string, import('./types').Col[]>} */
 export const colsGridView = reactive({})
-
 /** @type {Record<string, import('./types').Col[]>} */
 export const colsForUpdate = reactive({})
-
 /** @type {Record<string, import('./types').Col[]>} */
 export const colsForInsert = reactive({})
-
 /** @type {Record<string, import('./types').Col[]>} */
 export const colsForCopy = reactive({})
 
 export const getTableKey = (schema, table) => schema + '.' + table
 
+//----------- COLS ----------------
 const getCols = (schema, table, method, colsObj) => new Promise(async resolve => {
    if (!api[schema] || !api[schema][table] || !api[schema][table][method]) return resolve([])
    const key = getTableKey(schema, table)
@@ -35,12 +33,12 @@ const getCols = (schema, table, method, colsObj) => new Promise(async resolve =>
    if (Array.isArray(colsObj[key])) return resolve(colsObj[key])
    resolve([])
 })
-
 const getColsGridView = (schema, table) => getCols(schema, table, 'GetColsGridView', colsGridView)
 const getColsForUpdate = (schema, table) => getCols(schema, table, 'GetColsForUpdate', colsForUpdate)
 const getColsForInsert = (schema, table) => getCols(schema, table, 'GetColsForInsert', colsForInsert)
 const getColsForCopy = (schema, table) => getCols(schema, table, 'GetColsForCopy', colsForCopy)
 
+//------------- BEANS -------------
 export const initDataGridView = (schema, table, reload = false) => new Promise(async resolve => {
    if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeans) return resolve([])
    const cols = await getColsGridView(schema, table)
@@ -51,9 +49,9 @@ export const initDataGridView = (schema, table, reload = false) => new Promise(a
       for (let bean of newBeans) processBeanFields(bean, cols)
       beans[key] = newBeans
    }
-   resolve(true)
 })
 
+//---------- BEAN ---------------------
 export const getBeanForGridView = (schema, table, id) => new Promise(async resolve => {
    if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForGridView) return resolve({})
    const cols = await getColsGridView(schema, table)
@@ -62,10 +60,26 @@ export const getBeanForGridView = (schema, table, id) => new Promise(async resol
    resolve(bean)
 })
 
-export const getBeanForUpdate = async (schema, table, id) => {
+export const initDataForUpdate = async (schema, table, id) => {
    if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForUpdate) return [null, null]
    const cols = await getColsForUpdate(schema, table)
    const bean = await api[schema][table].GetBeanForUpdate(id)
+   processBeanFields(bean, cols)
+   return [bean, cols]
+}
+
+export const initDataForInsert = async (schema, table) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForInsert) return [null, null]
+   const cols = await getColsForInsert(schema, table)
+   const bean = await api[schema][table].GetBeanForInsert()
+   processBeanFields(bean, cols)
+   return [bean, cols]
+}
+
+export const initDataForCopy = async (schema, table, id) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForCopy) return [null, null]
+   const cols = await getColsForCopy(schema, table)
+   const bean = await api[schema][table].GetBeanForCopy(id)
    processBeanFields(bean, cols)
    return [bean, cols]
 }
@@ -95,13 +109,27 @@ export const updateBean = (schema, table, id, bean, cols) => new Promise(async r
    const updatedBean = await api[schema][table].UpdateBean(id, bean)
    processBeanFields(updatedBean, cols)
    resolve(updatedBean)
-   // console.log('AFTER RESOLVE');
+   if (updatedBean.id) {
+      await updateBeansStorage(schema, table, updatedBean.id)
+   }
+})
+
+export const insertBean = (schema, table, bean, cols) => new Promise(async resolve => {
+   const insertedBean = await api[schema][table].InsertBean(bean)
+   processBeanFields(insertedBean, cols)
+   resolve(insertedBean)
+   if (insertedBean.id) {
+      await updateBeansStorage(schema, table, insertedBean.id)
+   }
+})
+
+async function updateBeansStorage(schema, table, beanId) {
    const tableKey = getTableKey(schema, table)
-   if (Array.isArray(beans[tableKey]) && updatedBean.id) {
-      const bean = await getBeanForGridView(schema, table, id)
+   if (Array.isArray(beans[tableKey]) && beanId) {
+      const bean = await getBeanForGridView(schema, table, beanId)
       const oldBean = beans[tableKey].find(el => el.id === bean.id)
       if (oldBean) for (const key in bean) oldBean[key] = bean[key]
       else beans[tableKey].push(bean)
    }
-})
+}
 

@@ -16,7 +16,7 @@ export function CreateApi(tables) {
             GetBeans: () => post(`/${schema}/${table}/beans`),
             GetBeanForGridView: id => post(`/${schema}/${table}/bean/${id}?type=grid-view`),
             GetBeanForUpdate: id => post(`/${schema}/${table}/bean/${id}?type=update`),
-            GetBeanForInsert: id => post(`/${schema}/${table}/bean/${id}?type=insert`),
+            GetBeanForInsert: () => post(`/${schema}/${table}/bean?type=insert`),
             GetBeanForCopy: id => post(`/${schema}/${table}/bean/${id}?type=copy`),
             InsertBean: bean => post(`/${schema}/${table}/insert`, JSON.stringify(bean)),
             UpdateBean: (id, bean) =>  post(`/${schema}/${table}/update`, JSON.stringify({ id, bean })),
