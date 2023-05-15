@@ -5,11 +5,10 @@
    </Grid2>
    <div class="mt-3"><slot></slot></div>
 </form>
-
 </template>
 
 <script setup>
 import Grid2 from './Grid2.vue'
 import InputField from './InputField.vue';
-const props = defineProps(['bean', 'cols', 'onSubmit'])
+defineProps(['bean', 'cols', 'onSubmit'])
 </script>

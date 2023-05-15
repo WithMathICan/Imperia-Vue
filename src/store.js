@@ -1,5 +1,6 @@
 import { ref, reactive } from 'vue'
 import { api } from './api'
+import { showMessage } from './messages'
 
 export const store = reactive({
    isAuthorized: undefined,
@@ -23,24 +24,24 @@ export const colsForCopy = reactive({})
 export const getTableKey = (schema, table) => schema + '.' + table
 
 //----------- COLS ----------------
-const getCols = (schema, table, method, colsObj) => new Promise(async resolve => {
-   if (!api[schema] || !api[schema][table] || !api[schema][table][method]) return resolve([])
+const getCols = async (schema, table, method, colsObj) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table][method]) return []
    const key = getTableKey(schema, table)
    if (!Array.isArray(colsObj[key]) && colsObj[key] !== 'loading') {
       colsObj[key] = 'loading'
       colsObj[key] = await api[schema][table][method]()
    }
-   if (Array.isArray(colsObj[key])) return resolve(colsObj[key])
-   resolve([])
-})
+   if (Array.isArray(colsObj[key])) return colsObj[key]
+   return []
+}
 const getColsGridView = (schema, table) => getCols(schema, table, 'GetColsGridView', colsGridView)
 const getColsForUpdate = (schema, table) => getCols(schema, table, 'GetColsForUpdate', colsForUpdate)
 const getColsForInsert = (schema, table) => getCols(schema, table, 'GetColsForInsert', colsForInsert)
 const getColsForCopy = (schema, table) => getCols(schema, table, 'GetColsForCopy', colsForCopy)
 
 //------------- BEANS -------------
-export const initDataGridView = (schema, table, reload = false) => new Promise(async resolve => {
-   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeans) return resolve([])
+export const initDataGridView = async (schema, table, reload = false) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeans) return
    const cols = await getColsGridView(schema, table)
    const key = getTableKey(schema, table)
    if ((reload || !Array.isArray(beans[key])) && beans[key] !== 'loading') {
@@ -49,16 +50,16 @@ export const initDataGridView = (schema, table, reload = false) => new Promise(a
       for (let bean of newBeans) processBeanFields(bean, cols)
       beans[key] = newBeans
    }
-})
+}
 
 //---------- BEAN ---------------------
-export const getBeanForGridView = (schema, table, id) => new Promise(async resolve => {
-   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForGridView) return resolve({})
+export const getBeanForGridView = async (schema, table, id) => {
+   if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForGridView) return {}
    const cols = await getColsGridView(schema, table)
    const bean = await api[schema][table].GetBeanForGridView(id)
    processBeanFields(bean, cols)
-   resolve(bean)
-})
+   return bean
+}
 
 export const initDataForUpdate = async (schema, table, id) => {
    if (!api[schema] || !api[schema][table] || !api[schema][table].GetBeanForUpdate) return [null, null]

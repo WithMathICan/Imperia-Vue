@@ -5,7 +5,7 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import './style.scss'
 
-import { createApp, defineAsyncComponent } from 'vue'
+import { createApp } from 'vue'
 
 import PrimeVue from 'primevue/config';
 import App from './App.vue'

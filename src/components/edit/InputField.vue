@@ -1,3 +1,4 @@
+<!-- eslint-disable vue/no-mutating-props -->
 <template>
 <div>
    <label :for="col.column_name">{{t(col.column_name)}}<span class="text-red-500" v-if="!col.is_nullable">*</span></label>
@@ -34,5 +35,5 @@ import InputFk from "./InputFk.vue";
 import Textarea from 'primevue/textarea'
 import { t } from "../../translation";
 /** @type {{bean: any, col: import('types').Col}} */
-const props = defineProps(['bean', 'col'])
+defineProps(['bean', 'col'])
 </script>
