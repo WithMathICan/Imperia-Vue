@@ -94,11 +94,15 @@ import { t } from '../translation'
 import { loading, initDataGridView, beans, colsGridView, getTableKey } from '../store'
 import { onMounted, computed, ref, watch, defineAsyncComponent } from 'vue'
 
-import DataTable from 'primevue/datatable'
+// import DataTable from 'primevue/datatable'
+const DataTable = defineAsyncComponent(() => import('primevue/datatable'))
 import Column from 'primevue/column'
+// const Column = defineAsyncComponent(() => import('primevue/column'))
 import Image from 'primevue/image'
-import MultiSelect from 'primevue/multiselect'
-import Calendar from 'primevue/calendar'
+// import MultiSelect from 'primevue/multiselect'
+const MultiSelect = defineAsyncComponent(() => import('primevue/multiselect'))
+// import Calendar from 'primevue/calendar'
+const Calendar = defineAsyncComponent(() => import('primevue/calendar'))
 import { FilterMatchMode, FilterOperator } from 'primevue/api';
 import ColFk from './data-grid/ColFk.vue'
 import ColM2M from './data-grid/ColM2M.vue'

@@ -5,11 +5,20 @@ import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 import './style.scss'
 
-import { createApp } from 'vue'
+import { createApp, defineAsyncComponent } from 'vue'
 
 import PrimeVue from 'primevue/config';
 import App from './App.vue'
+import EmptyComponent from './components/EmptyComponent.vue'
+import NotLoadedComponent from './components/NotLoadedComponent.vue'
 import ConfirmationService from 'primevue/confirmationservice';
+// const Calendar = defineAsyncComponent({
+//    loader: () => import('primevue/calendar'),
+//    loadingComponent: EmptyComponent,
+//    errorComponent: NotLoadedComponent,
+//    suspensible: true,
+// })
+// import Calendar from 'primevue/calendar'
 
 //import DataTable from 'primevue/datatable';
 //import Column from 'primevue/column';
@@ -32,6 +41,7 @@ async function start() {
       primevueComponents.forEach(el => {
          app.component(el.name, el)
       })
+      // app.component(Calendar.name, Calendar)
       app.use(ConfirmationService)
       
       app.use(router)

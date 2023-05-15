@@ -19,7 +19,17 @@
 </template>
 
 <script setup>
-import Calendar from "primevue/calendar"
+import { defineAsyncComponent } from 'vue'
+// import EmptyComponent from '../EmptyComponent.vue'
+// import NotLoadedComponent from '../NotLoadedComponent.vue'
+// import Calendar from "primevue/calendar"
+// const Calendar = defineAsyncComponent({
+//    loader: () => import('primevue/calendar'),
+//    loadingComponent: EmptyComponent,
+//    errorComponent: NotLoadedComponent,
+//    suspensible: true,
+// })
+const Calendar = defineAsyncComponent(() => import('primevue/calendar'))
 import InputFk from "./InputFk.vue";
 import Textarea from 'primevue/textarea'
 import { t } from "../../translation";

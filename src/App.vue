@@ -30,10 +30,11 @@ import { defineAsyncComponent, reactive, onMounted } from 'vue';
 import { store } from './store'
 import { ClearMessages, messages, msgClose } from './messages'
 import { post } from './http'
+import Message from 'primevue/message'
 
 import ConfirmDialog from 'primevue/confirmdialog'
 const Password = defineAsyncComponent(() => import('primevue/password'));
-const Message = defineAsyncComponent(() => import('primevue/message'));
+// const Message = defineAsyncComponent(() => import('primevue/message'));
 
 const loginData = reactive({
    login: '',
