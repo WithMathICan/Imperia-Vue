@@ -1,5 +1,6 @@
 import { ref, watch } from 'vue'
 import { initDataForCopy, initDataForInsert, initDataForUpdate } from '../../store'
+import { ClearMessages } from '../../messages'
 
 /**
  * @param {string} schema 
@@ -37,8 +38,8 @@ export function createDataForEdit(schema, table, id, type, confirmRequire, save)
 
    const onSubmit = () => {
       isExecuting = true
+      ClearMessages()
       save().finally(() => {
-         console.log('finally');
          isExecuting = false
       })
    }

@@ -7,10 +7,8 @@
          <ChangeMessage :is-bean-changed="isBeanChanged"/>
          <EditForm :bean="bean" :cols="cols" :on-submit="onSubmit">
             <SaveButton :is-bean-changed="isBeanChanged" />
-            <router-link class="link p-button mr-1"
-               :to="{ name: `copy_${schema}_${table}`, params: { id } }">Копировать</router-link>
-            <router-link class="link p-button p-button-warning mr-1"
-               :to="{ name: `insert_${schema}_${table}` }">Создать</router-link>
+            <router-link class="link p-button mr-1" :to="{ name: `copy_${schema}_${table}`, params: { id } }">Копировать</router-link>
+            <router-link class="link p-button p-button-warning mr-1" :to="{ name: `insert_${schema}_${table}` }">Создать</router-link>
             <ButtonDelete :schema="schema" :table="table" :ids="[id]" :deleteCb="viewAll" />
             <router-link class="link p-button mr-1" :to="{ name: `data_grid_${schema}_${table}` }">Все записи</router-link>
          </EditForm>
