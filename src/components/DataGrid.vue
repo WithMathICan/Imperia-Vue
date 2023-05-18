@@ -46,7 +46,7 @@
          </template>
       </Column>
       <Column v-for="col of selectedColumns" :field="col.column_name" :header="col.column_name" :sortable="true"
-         :data-type="findDataType(col)" :showFilterMatchModes="!col.fk">
+         :data-type="findDataType(col)" :showFilterMatchModes="!col.fk" :key="col.column_name">
          <template #body="slotProps">
             <ColFk v-if="col.data_type === 'fk'" :col="col" :bean="slotProps.data" />
             <ColM2M v-else-if="col.data_type === 'm2m'" :col="col" :bean="slotProps.data"></ColM2M>
@@ -91,11 +91,11 @@
 
 <script setup>
 import { t } from '../translation'
-import { loading, initDataGridView, beans, colsGridView, getTableKey } from '../store'
+import { initDataGridView, beans, colsGridView, getTableKey } from '../store'
 import { onMounted, computed, ref, watch, defineAsyncComponent } from 'vue'
 
-// import DataTable from 'primevue/datatable'
-const DataTable = defineAsyncComponent(() => import('primevue/datatable'))
+import DataTable from 'primevue/datatable'
+// const DataTable = defineAsyncComponent(() => import('primevue/datatable'))
 import Column from 'primevue/column'
 // const Column = defineAsyncComponent(() => import('primevue/column'))
 import Image from 'primevue/image'

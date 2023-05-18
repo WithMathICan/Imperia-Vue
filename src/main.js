@@ -51,4 +51,20 @@ async function start() {
 
 start()
 
+// addEventListener("unhandledrejection", (event) => {
+//    console.log({event});
+//    event.preventDefault();
+// });
+
+// window.addEventListener('error', (event) => {
+//    // An uncaught exception occurred. It will be logged in the console.
+//    event.preventDefault();
+   
+//    // Get the error properties from the error event object
+//    const { message, filename, lineno, colno, error } = event;
+   
+//    // Output, if desired.
+//    console.log('Captured uncaught exception:', message, filename, lineno, colno, error.stack);
+//  });
+
 

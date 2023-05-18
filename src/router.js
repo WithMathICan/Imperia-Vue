@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Main from './components/Main.vue'
+import Main from './components/MainPage.vue'
 import DataGrid from './components/DataGrid.vue'
 import UpdateRecord from './components/UpdateRecord.vue'
 import CopyRecord from './components/CopyRecord.vue'
