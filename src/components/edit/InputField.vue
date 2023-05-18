@@ -10,8 +10,8 @@
    <Calendar v-else-if="col.data_type === 'date'" class="w-full" :required="!col.is_nullable" 
       v-model="bean[col.column_name]" :showTime="true" />
    <InputFk v-else-if="col.data_type === 'fk'" :bean="bean" :col="col"></InputFk>
-   <!-- <InputM2MTree v-else-if="col.data_type === 'm2m' && col.m2m.isTree && bean[col.column_name]" :bean="bean" :col="col"></InputM2MTree>
    <InputM2M v-else-if="col.data_type === 'm2m'" :bean="bean" :col="col"></InputM2M>
+   <!-- <InputM2MTree v-else-if="col.data_type === 'm2m' && col.m2m.isTree && bean[col.column_name]" :bean="bean" :col="col"></InputM2MTree>
    <InputFile v-else-if="col.data_type === 'file'" v-model="bean[col.column_name]"  
       :schema="col.table_schema" :table="col.table_name" :field_name="col.column_name" ></InputFile>
    <InputKeyValue v-else-if="col.data_type  === 'key-value'" :key_schema="col.keyValue.keys_schema_name" 
@@ -34,6 +34,7 @@ const Calendar = defineAsyncComponent(() => import('primevue/calendar'))
 import InputFk from "./InputFk.vue";
 import Textarea from 'primevue/textarea'
 import { t } from "../../translation";
+import InputM2M from './InputM2M.vue';
 /** @type {{bean: any, col: import('types').Col}} */
 defineProps(['bean', 'col'])
 </script>

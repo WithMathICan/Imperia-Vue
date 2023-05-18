@@ -1,6 +1,10 @@
 <template>
 <h1 class="text-700 mb-2">{{ t(table) }} </h1>
 <div v-if="Array.isArray(beans[key]) && Array.isArray(colsGridView[key])">
+   <div class="mb-2">
+      <router-link class="link p-button mr-1" :to="{ name: `insert_${schema}_${table}` }">Создать</router-link>
+      <ButtonDelete :schema="schema" :table="table" :ids="selectedBeans.map(b => b.id)" label="Удалить" :delete-cb="clearSelected" />
+   </div>
    <DataTable 
       :value="beans[key]" 
       :rowHover="true"
@@ -45,7 +49,7 @@
             <InputText type="text" v-model="filterModel.value" class="p-column-filter" placeholder="Search by ID" />
          </template>
       </Column>
-      <Column v-for="col of selectedColumns" :field="col.column_name" :header="col.column_name" :sortable="true"
+      <Column v-for="col of selectedColumns" :field="col.column_name" :header="t(col.column_name)" :sortable="true"
          :data-type="findDataType(col)" :showFilterMatchModes="!col.fk" :key="col.column_name">
          <template #body="slotProps">
             <ColFk v-if="col.data_type === 'fk'" :col="col" :bean="slotProps.data" />
